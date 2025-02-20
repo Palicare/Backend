@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: postgres
+      POSTGRES_DB: palicare
+  adminer:
+    image: adminer:latest
+    ports:
+      - 8081:8080
