@@ -19,7 +19,6 @@ public class PatientEntity {
     private String religion;
     private String diet;
     private String nationality;
-    private String profilePicturePath;
     private byte careLevel;
     private String misc;
     private int roomNumber;
@@ -69,10 +68,6 @@ public class PatientEntity {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
-    }
-
-    public void setProfilePicturePath(String profilePicturePath) {
-        this.profilePicturePath = profilePicturePath;
     }
 
     public void setCareLevel(byte careLevel) {

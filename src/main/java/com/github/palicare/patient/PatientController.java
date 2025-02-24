@@ -3,59 +3,55 @@ package com.github.palicare.patient;
 import com.github.palicare.contact.ContactEntity;
 import com.github.palicare.contact.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+@RequestMapping("/patients")
 @RestController
 public class PatientController {
-    private final PatientRepository patientRepository;
-    private final PatientMapper patientMapper;
-    private final ContactRepository contactRepository;
+    private final PatientService patientService;
+    private final ProfilePictureService profilePictureService;
 
     @Autowired
-    public PatientController(PatientRepository patientRepository, ContactRepository contactRepository, PatientMapper patientMapper) {
-        this.patientRepository = patientRepository;
-        this.contactRepository = contactRepository;
-        this.patientMapper = patientMapper;
+    public PatientController(PatientService patientService, ProfilePictureService profilePictureService) {
+        this.patientService = patientService;
+        this.profilePictureService = profilePictureService;
     }
 
-    @GetMapping(path = "/findAll")
-    public List<PatientEntity> findAll() {
-        return patientRepository.findAll();
+    @GetMapping
+    public List<PatientDTO> findAllPatients() {
+        return patientService.findAllPatients();
     }
 
-    @GetMapping(path = "/create")
-    public PatientDTO create() {
-        ContactEntity contact = new ContactEntity();
-        contact.setFirstName("Moritz");
-        contact.setLastName("Muster");
-        contact.setBirthDate(LocalDate.now());
-        contact.setPower(false);
-        contact.setCare("");
-        contact.setRelation("Brother");
-        contact = contactRepository.save(contact);
+    @GetMapping("/{id}")
+    public PatientDTO findPatientById(@PathVariable Long id) {
+        return patientService.findPatientById(id);
+    }
 
-        PatientEntity patient = new PatientEntity();
-        patient.setFirstName("Max");
-        patient.setLastName("Muster");
-        patient.setBirthDate(LocalDate.now());
-        patient.setGender("Male");
-        patient.setReligion("Christian");
-        patient.setDiet("default");
-        patient.setNationality("Germany");
-        patient.setProfilePicturePath("");
-        patient.setCareLevel((byte) 5);
-        patient.setMisc("");
-        patient.setRoomNumber(0);
-        patient.setAllergies(List.of("House dust"));
-        patient.setCareNeeds(Collections.emptyList());
-        patient.setSymptoms(List.of("Depression"));
-        patient.setContact(contact);
-        patient = patientRepository.save(patient);
-        return patientMapper.toPatientDTO(patient);
+    @PostMapping
+    public PatientDTO createPatient(@RequestBody PatientDTO patientDTO) {
+        return patientService.savePatient(patientDTO);
+    }
+
+    @PostMapping("/{id}/profile-picture")
+    public void uploadProfilePicture(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        profilePictureService.storeProfilePicture(id, file);
+    }
+
+    @GetMapping("/{id}/profile-picture")
+    public ResponseEntity<Resource> getProfilePicture(@PathVariable Long id) {
+        Resource file = profilePictureService.loadProfilePicture(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(file);
     }
 }
