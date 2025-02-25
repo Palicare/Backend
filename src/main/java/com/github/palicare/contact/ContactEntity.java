@@ -17,7 +17,6 @@ public class ContactEntity {
     private String lastName;
     private LocalDate birthDate;
     private boolean power;
-    private String care;
     private String relation;
 
     public void setFirstName(String firstName) {
@@ -34,10 +33,6 @@ public class ContactEntity {
 
     public void setPower(boolean power) {
         this.power = power;
-    }
-
-    public void setCare(String care) {
-        this.care = care;
     }
 
     public void setRelation(String relation) {
@@ -62,10 +57,6 @@ public class ContactEntity {
 
     public boolean isPower() {
         return power;
-    }
-
-    public String getCare() {
-        return care;
     }
 
     public String getRelation() {
