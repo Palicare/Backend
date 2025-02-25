@@ -3,10 +3,9 @@ package com.github.palicare.patient;
 import com.github.palicare.contact.ContactEntity;
 import com.github.palicare.contact.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
@@ -21,8 +20,14 @@ public class PatientService {
         this.patientMapper = patientMapper;
     }
 
-    public List<PatientDTO> findAllPatients() {
-        return patientRepository.findAll().stream().map(patientMapper::toPatientDTO).collect(Collectors.toList());
+    public Page<PatientDTO> searchEmployees(String query, Pageable pageable) {
+        return patientRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+                query, query, pageable
+        ).map(patientMapper::toPatientDTO);
+    }
+
+    public Page<PatientDTO> findAllPatients(Pageable pageable) {
+        return patientRepository.findAll(pageable).map(patientMapper::toPatientDTO);
     }
 
     public PatientDTO findPatientById(Long id) {

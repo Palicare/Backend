@@ -1,17 +1,13 @@
 package com.github.palicare.patient;
 
-import com.github.palicare.contact.ContactEntity;
-import com.github.palicare.contact.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 @RequestMapping("/patients")
 @RestController
@@ -26,8 +22,13 @@ public class PatientController {
     }
 
     @GetMapping
-    public List<PatientDTO> findAllPatients() {
-        return patientService.findAllPatients();
+    public Page<PatientDTO> findAllPatients(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return patientService.findAllPatients(PageRequest.of(page, size));
+    }
+
+    @GetMapping("/search")
+    public Page<PatientDTO> searchPatients(@RequestParam(defaultValue = "") String query, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return patientService.searchEmployees(query, PageRequest.of(page, size));
     }
 
     @GetMapping("/{id}")
