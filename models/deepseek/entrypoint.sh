@@ -6,5 +6,5 @@ export OLLAMA_MODELS=/models
 ollama serve &
 
 sleep 2
-ollama pull deepseek-r1:1.5b
+ollama pull deepseek-r1:8b
 wait %1
