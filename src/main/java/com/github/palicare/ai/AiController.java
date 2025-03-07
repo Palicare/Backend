@@ -40,7 +40,7 @@ public class AiController {
         prompt.append("Your role is assistant. The users role is user. You need to write a response.");
 
         var body = new HashMap<>();
-        body.put("model", "deepseek-r1:8b");
+        body.put("model", "deepseek-r1:1.5b");
         body.put("prompt", prompt.toString());
         body.put("stream", false);
         var response = restClient.post().uri(llmServerUrl + "/api/generate").body(body).retrieve();
