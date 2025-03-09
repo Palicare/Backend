@@ -2,17 +2,20 @@ package com.github.palicare.ai;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @RestController
 public class AiController {
@@ -21,6 +24,9 @@ public class AiController {
 
     @Value("${stt.server.url}")
     private String sttServerUrl;
+
+    @Value("${tts.server.url}")
+    private String ttsServerUrl;
 
     @Value("${llm.server.url}")
     private String llmServerUrl;
@@ -50,6 +56,21 @@ public class AiController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/tts")
+    public byte[] requestTTSResponse(@RequestBody String input) {
+        // RestClient did not work for some reason
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> body = new HashMap<>();
+        body.put("text", input);
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<byte[]> response = restTemplate.postForEntity(ttsServerUrl, requestEntity, byte[].class);
+        return response.getBody();
     }
 
     @PostMapping("/stt")

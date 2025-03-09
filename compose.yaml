@@ -25,6 +25,11 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [ gpu ]
+  googletts:
+    build:
+      context: ./models/google
+    ports:
+      - 8084:8080
   deepseek:
     build:
       context: ./models/deepseek
