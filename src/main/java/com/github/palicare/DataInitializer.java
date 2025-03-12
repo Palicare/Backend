@@ -22,27 +22,61 @@ public class DataInitializer {
 
     @PostConstruct
     public void initData() {
-        if (this.patientRepository.count() == 0) {
-            for (int i = 0; i < 100; i++) {
-                PatientDTO patient = new PatientDTO(
-                        null,
-                        "Max",
-                        "Mustermann",
-                        LocalDate.now(),
-                        "Männlich",
-                        "Christlich",
-                        "Keine",
-                        "Deutsch",
-                        (byte) 3,
-                        "Test Zusatz",
-                        100,
-                        new ContactDTO(null, "Erika", "Mustermann", LocalDate.now(), true, "Schwester"),
-                        List.of("Hausstaub", "Heuschnupfen "),
-                        List.of("Keine"),
-                        List.of("Fieber", "Husten")
-                );
-                patientService.savePatient(patient);
-            }
-        }
+        PatientDTO patient1 = new PatientDTO(
+                null,
+                "Max",
+                "Mustermann",
+                LocalDate.now(),
+                "Männlich",
+                "Christlich",
+                "Keine",
+                "Deutsch",
+                (byte) 3,
+                "Test Zusatz",
+                100,
+                new ContactDTO(null, "Erika", "Mustermann", LocalDate.now(), true, "Schwester", "01773012485"),
+                List.of("Hausstaub", "Heuschnupfen"),
+                List.of("Keine"),
+                List.of("Fieber", "Husten")
+        );
+        patientService.savePatient(patient1);
+
+        PatientDTO patient2 = new PatientDTO(
+                null,
+                "Lisa",
+                "Müller",
+                LocalDate.of(1985, 6, 15),
+                "Weiblich",
+                "Atheistisch",
+                "Asthma",
+                "Deutsch",
+                (byte) 2,
+                "Zusatzinfo: Allergikerin",
+                120,
+                new ContactDTO(null, "Hans", "Müller", LocalDate.of(1955, 3, 20), false, "Vater", "01774561234"),
+                List.of("Pollen", "Erdnüsse"),
+                List.of("Laktoseintoleranz"),
+                List.of("Kurzatmigkeit", "Hautausschlag")
+        );
+        patientService.savePatient(patient2);
+
+        PatientDTO patient3 = new PatientDTO(
+                null,
+                "Felix",
+                "Schneider",
+                LocalDate.of(1992, 11, 30),
+                "Männlich",
+                "Islamisch",
+                "Bluthochdruck",
+                "Deutsch",
+                (byte) 4,
+                "Sportler",
+                110,
+                new ContactDTO(null, "Miriam", "Schneider", LocalDate.of(1990, 8, 10), false, "Ehefrau", "01771234567"),
+                List.of("Keine"),
+                List.of("Vegetarier"),
+                List.of("Kopfschmerzen", "Schwindel")
+        );
+        patientService.savePatient(patient3);
     }
 }

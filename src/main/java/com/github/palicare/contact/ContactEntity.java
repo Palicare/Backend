@@ -18,6 +18,7 @@ public class ContactEntity {
     private LocalDate birthDate;
     private boolean power;
     private String relation;
+    private String phoneNumber;
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;

@@ -1,5 +1,10 @@
 package com.github.palicare.ai;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.palicare.patient.PatientEntity;
+import com.github.palicare.patient.PatientRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -15,11 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
 @RestController
 public class AiController {
-    record OllamaDTO(List<HashMap<String, String>> messages) {
+    private final PatientRepository patientRepository;
+    private final ObjectMapper objectMapper;
+
+    record OllamaDTO(List<HashMap<String, String>> messages, long patientId) {
     }
 
     @Value("${stt.server.url}")
@@ -33,18 +39,22 @@ public class AiController {
 
     private final RestClient restClient;
 
-    public AiController() {
+    public AiController(PatientRepository patientRepository) {
         restClient = RestClient.create();
+        this.patientRepository = patientRepository;
+        this.objectMapper =  new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     @PostMapping("/llm")
-    public ResponseEntity<String> requestLlmResponse(@RequestBody OllamaDTO request) {
-        StringBuilder prompt = new StringBuilder("You are a machine learning model. Your previous chat with the user is this:\n");
+    public ResponseEntity<String> requestLlmResponse(@RequestBody OllamaDTO request) throws JsonProcessingException {
+        StringBuilder prompt = new StringBuilder("Du bist ein machine learning model. Dir werden Fragen gestellt, die diesen Patienten betreffen. ");
+        PatientEntity patient = patientRepository.findById(request.patientId).orElse(null);
+        prompt.append(objectMapper.writeValueAsString(patient));
+        prompt.append("Dein Vorheriger chat mit dem Nutzer ist:\n");
         for (HashMap<String, String> entry : request.messages) {
             prompt.append(entry.get("role")).append(":").append(entry.get("content")).append("\n");
         }
-        prompt.append("Your role is assistant. The users role is user. You need to write a response.");
-
+        prompt.append("Deine role ist assistant. Die Rolle des Nutzers ist user. Du musst eine Antwort auf deutsch schreiben.");
         var body = new HashMap<>();
         body.put("model", "deepseek-r1:1.5b");
         body.put("prompt", prompt.toString());
