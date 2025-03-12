@@ -8,4 +8,5 @@ RUN mvn clean package
 FROM --platform=linux/amd64 eclipse-temurin:21-jre-alpine
 WORKDIR /usr/src/myapp
 COPY --from=builder /usr/src/myapp/target/backend-0.0.1-SNAPSHOT.jar app.jar
+COPY profile-pictures /usr/src/myapp/profile-pictures/
 CMD ["java", "-jar", "app.jar"]

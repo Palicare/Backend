@@ -17,8 +17,8 @@ public class PatientService {
     }
 
     public Page<PatientDTO> searchEmployees(String query, Pageable pageable) {
-        return patientRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
-                query, query, pageable
+        return patientRepository.searchPatients(
+                query, pageable
         ).map(patientMapper::toPatientDTO);
     }
 

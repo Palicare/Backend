@@ -22,6 +22,8 @@ public class DataInitializer {
 
     @PostConstruct
     public void initData() {
+        if (this.patientRepository.count() != 0)
+            return;
         PatientDTO patient1 = new PatientDTO(
                 null,
                 "Max",
