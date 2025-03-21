@@ -30,11 +30,11 @@ services:
       context: ./models/google
     ports:
       - 8084:8080
-  deepseek:
+  llm:
     build:
-      context: ./models/deepseek
+      context: ./models/llm
     volumes:
-      - ./models/deepseek/model:/models
+      - ./models/llm/model:/models
     ports:
       - 8083:8080
     deploy:

@@ -56,7 +56,7 @@ public class AiController {
         }
         prompt.append("Deine role ist assistant. Die Rolle des Nutzers ist user. Du musst eine Antwort auf deutsch schreiben.");
         var body = new HashMap<>();
-        body.put("model", "deepseek-r1:1.5b");
+        body.put("model", "gemma3:1b");
         body.put("prompt", prompt.toString());
         body.put("stream", false);
         var response = restClient.post().uri(llmServerUrl + "/api/generate").body(body).retrieve();
